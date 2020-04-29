@@ -3,7 +3,7 @@ const MAX_RADIUS = 7;
 
 const MAX_VELOCITY = 2;
 
-const NUMBER_OF_CIRCLES = (window.innerWidth < 700) ? 20 : 50;
+const NUMBER_OF_CIRCLES = (window.innerWidth < 700) ? 20 : 75;
 
 const DRAW_LINE_THRESHOLD = 150;
 const DRAW_LINE_THRESHOLD_SQUARED = DRAW_LINE_THRESHOLD * DRAW_LINE_THRESHOLD;
@@ -114,6 +114,8 @@ class Circle {
 }
 
 let circles, width, height, ctx, mouse;
+
+let fps, lastAnimTime;
 function setup() {
     const canvas = document.getElementById('canvas');
     ctx = canvas.getContext('2d');
@@ -137,7 +139,10 @@ function setup() {
 }
 
 function draw() {
+    calculateFps();
     ctx.clearRect(0, 0, width, height);
+
+    drawFps(ctx);
 
     ctx.fillStyle = 'rgba(0, 0, 0, 0.07)';
     ctx.fillRect(0, 0, width, height);
@@ -167,10 +172,29 @@ function draw() {
 }
 setup();
 
+function calculateFps() {
+    if (!lastAnimTime) {
+        lastAnimTime = performance.now();
+        fps = 0;
+        return;
+    }
+
+    delta = (performance.now() - lastAnimTime) / 1000;
+    lastAnimTime = performance.now();
+    fps = 1 / delta;
+}
+
+function drawFps(ctx) {
+    ctx.fillStyle = 'red';
+    ctx.font = '25px serif';
+    ctx.textBaseline = 'top';
+    ctx.fillText(Math.floor(fps).toString(), 10, 10);
+}
+
 function drawMouse(ctx) {
     ctx.fillStyle = 'red';
     ctx.beginPath();
-    ctx.arc(mouse.x, mouse.y, 1, 0, 2 * Math.PI, true);
+    ctx.arc(mouse.x, mouse.y, 3, 0, 2 * Math.PI, true);
     ctx.fill();
 }
 
