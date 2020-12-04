@@ -12,6 +12,13 @@ body {
     align-items: center;
 }
 
+.wrapper {
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    pointer-events: none;
+}
+
 .wrapper .soon {
     font-family: 'Baloo Tamma 2', cursive;
     font-weight: 700;
@@ -20,6 +27,27 @@ body {
     text-transform: lowercase;
 
     color: #666;
+
+    user-select: none;
+
+    margin-bottom: -40px;
+}
+
+.wrapper .links {
+    display: flex;
+    justify-content: center;
+}
+
+.wrapper .links a {
+    pointer-events: all;
+    display: block;
+    font-size: 2em;
+    color: #666666;
+    margin-right: 10px;
+}
+
+.wrapper .links a:hover {
+    color: #999999;
 }
 
 .background {
