@@ -139,10 +139,10 @@ function setup() {
 }
 
 function draw() {
-    calculateFps();
+    // calculateFps();
     ctx.clearRect(0, 0, width, height);
 
-    drawFps(ctx);
+    // drawFps(ctx);
 
     ctx.fillStyle = 'rgba(0, 0, 0, 0.07)';
     ctx.fillRect(0, 0, width, height);
