@@ -35,8 +35,8 @@ body {
     border-bottom-left-radius: 0;
 }
 
-.wrapper #copyButton {
-    border: 1px rgba(0, 0, 0, 0.1) solid;
+.wrapper .spinner {
+    margin-top: 10px;
 }
 
 .wrapper #inputTexto {
