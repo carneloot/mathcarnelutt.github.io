@@ -1,0 +1,8 @@
+{
+    "redirects": [
+        { "source": "/git", "destination": "https://drive.google.com/file/d/1noEnE8de9SeOQO2_hzgkILRYRVXsg5ru/view?usp=sharing" }
+    ],
+    "rewrites": [
+        { "source": "/projects/:match*", "destination": "https://mathcarnelutt.github.io/:match*" }
+    ]
+}
