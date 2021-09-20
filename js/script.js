@@ -86,7 +86,6 @@ function cleanCircles() {
     const chanceToRemove = (circles.length - MAX_NUMBER_OF_CIRCLES) / MAX_NUMBER_OF_CIRCLES;
     const circlesToRemove = Math.floor(map(chanceToRemove, 0, 1, 1, MAX_NUMBER_OF_CIRCLES * 0.1));
 
-    console.log(chanceToRemove, circlesToRemove)
     if (Math.random() < chanceToRemove) {
         for (let i = 0; i < circlesToRemove; i++) {
             circles.splice(0, 1);
