@@ -3,6 +3,7 @@ import { getHeight, getWidth, MAX_NUMBER_OF_CIRCLES, NUMBER_OF_CIRCLES, setHeigh
 import { map } from './lib/map.mjs';
 
 let circles, ctx, mouse, fps, lastAnimTime, delta;
+let isDevMode = false;
 
 function calculateFps() {
     if (!lastAnimTime) {
@@ -93,7 +94,7 @@ function cleanCircles() {
     }
 }
 
-function setup() {
+async function setup() {
     const canvas = document.getElementById('canvas');
     ctx = canvas.getContext('2d');
     canvas.setAttribute('width', window.innerWidth.toString());
@@ -114,15 +115,16 @@ function setup() {
         circles.push(Circle.getRandom());
     }
 
+    isDevMode = await fetch('./api/is-dev')
+        .then(res => res.json())
+        .then(data => data.isDev)
+
     window.requestAnimationFrame(draw);
 }
 
 function draw() {
-    // calculateFps();
+    calculateFps();
     ctx.clearRect(0, 0, getWidth(), getHeight());
-
-    // drawFps(ctx);
-    // drawNumberOfCircles(ctx);
 
     cleanCircles();
 
@@ -147,7 +149,11 @@ function draw() {
         circle.draw(ctx);
     }
 
-    // drawMouse(ctx);
+    if (isDevMode) {
+        drawFps(ctx);
+        drawNumberOfCircles(ctx);
+        drawMouse(ctx);
+    }
 
     window.requestAnimationFrame(draw);
 }
