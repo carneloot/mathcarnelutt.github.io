@@ -8,6 +8,7 @@ let fps: number;
 let lastAnimTime: DOMHighResTimeStamp;
 let delta: DOMHighResTimeStamp;
 let mouse: Circle;
+let maxCircles: number = 0;
 
 let isDevMode = false;
 
@@ -67,7 +68,7 @@ function handleMouseClick(ev: MouseEvent) {
 
     const { x, y } = mouse;
 
-    const numCirclesAdd = Math.min(Math.floor(circles.length * 0.1), MAX_NUMBER_OF_CIRCLES * 0.1);
+    const numCirclesAdd = Math.min(Math.floor(circles.length * 0.1), maxCircles * 0.1);
 
     for (let i = 0; i < numCirclesAdd; i++) {
         circles.push(new Circle(x, y));
@@ -87,8 +88,8 @@ function drawNumberOfCircles(ctx: CanvasRenderingContext2D) {
 }
 
 function cleanCircles() {
-    const chanceToRemove = (circles.length - MAX_NUMBER_OF_CIRCLES) / MAX_NUMBER_OF_CIRCLES;
-    const circlesToRemove = Math.floor(map(chanceToRemove, 0, 1, 1, MAX_NUMBER_OF_CIRCLES * 0.1));
+    const chanceToRemove = (circles.length - maxCircles) / maxCircles;
+    const circlesToRemove = Math.floor(map(chanceToRemove, 0, 1, 1, maxCircles * 0.1));
 
     if (Math.random() < chanceToRemove) {
         for (let i = 0; i < circlesToRemove; i++) {
@@ -112,13 +113,25 @@ function setup() {
     setWidth(canvas.width);
     setHeight(canvas.height);
 
+    maxCircles = MAX_NUMBER_OF_CIRCLES();
+
     circles = [];
 
-    for (let i = 0; i < NUMBER_OF_CIRCLES; i++) {
+    for (let i = 0; i < NUMBER_OF_CIRCLES(); i++) {
         circles.push(Circle.getRandom());
     }
 
     isDevMode = import.meta.env.DEV;
+
+    window.addEventListener('resize', () => {
+        canvas.setAttribute('width', window.innerWidth.toString());
+        canvas.setAttribute('height', window.innerHeight.toString());
+
+        setWidth(canvas.width);
+        setHeight(canvas.height);
+
+        maxCircles = MAX_NUMBER_OF_CIRCLES();
+    })
 
     window.requestAnimationFrame(draw);
 }

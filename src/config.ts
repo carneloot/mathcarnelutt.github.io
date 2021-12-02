@@ -3,8 +3,8 @@ export const MAX_RADIUS = 7;
 
 export const MAX_VELOCITY = 2;
 
-export const NUMBER_OF_CIRCLES = (window.innerWidth < 700) ? 20 : 75;
-export const MAX_NUMBER_OF_CIRCLES = NUMBER_OF_CIRCLES * 2;
+export const NUMBER_OF_CIRCLES = () => (window.innerWidth < 700) ? 30 : 75;
+export const MAX_NUMBER_OF_CIRCLES = () => NUMBER_OF_CIRCLES() * 2;
 
 export const DRAW_LINE_THRESHOLD = 150;
 export const DRAW_LINE_THRESHOLD_SQUARED = DRAW_LINE_THRESHOLD * DRAW_LINE_THRESHOLD;
