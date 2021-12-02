@@ -18,16 +18,16 @@ export type CircleLike = {
     isMouse: boolean;
 }
 
-export class Circle implements CircleLike {
+export class Circle {
     private readonly dx = Math.random() * MAX_VELOCITY * 2 - MAX_VELOCITY;
     private readonly dy = Math.random() * MAX_VELOCITY * 2 - MAX_VELOCITY;
-    public readonly radius = MIN_RADIUS + Math.random() * (MAX_RADIUS - MIN_RADIUS)
 
     public isMouse = false;
 
     constructor(
         public x: number,
         public y: number,
+        public readonly radius = MIN_RADIUS + Math.random() * (MAX_RADIUS - MIN_RADIUS),
     ) {}
 
     update() {

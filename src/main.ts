@@ -1,4 +1,4 @@
-import { Circle, CircleLike } from './circle';
+import { Circle } from './circle';
 import { getHeight, getWidth, MAX_NUMBER_OF_CIRCLES, NUMBER_OF_CIRCLES, setHeight, setWidth } from './config';
 import { map } from './util/map';
 
@@ -7,7 +7,7 @@ let ctx: CanvasRenderingContext2D;
 let fps: number;
 let lastAnimTime: DOMHighResTimeStamp;
 let delta: DOMHighResTimeStamp;
-let mouse: CircleLike;
+let mouse: Circle;
 
 let isDevMode = false;
 
@@ -43,12 +43,8 @@ function updateMouseObject(ev: MouseEvent) {
 
     const canvas = ev?.target! as HTMLCanvasElement;
     const rect = canvas.getBoundingClientRect();
-    mouse = {
-        x: ev.clientX - rect.left,
-        y: ev.clientY - rect.top,
-        radius: Infinity,
-        isMouse: true,
-    };
+    mouse.x = ev.clientX - rect.left;
+    mouse.y = ev.clientY - rect.top;
 }
 
 function resetMouseObject(ev?: MouseEvent) {
@@ -57,12 +53,12 @@ function resetMouseObject(ev?: MouseEvent) {
         ev.stopPropagation();
     }
 
-    mouse = {
-        x: Infinity,
-        y: Infinity,
-        radius: Infinity,
-        isMouse: true,
-    };
+    mouse = new Circle(
+        Infinity,
+        Infinity,
+        Infinity,
+    );
+    mouse.isMouse = true;
 }
 
 function handleMouseClick(ev: MouseEvent) {
@@ -158,6 +154,7 @@ function draw() {
         drawFps(ctx);
         drawNumberOfCircles(ctx);
         drawMouse(ctx);
+        mouse.drawVisionCircle(ctx);
     }
 
     window.requestAnimationFrame(draw);
