@@ -88,7 +88,7 @@ export class Circle implements CircleLike {
             const opacity = 0.1 + percentDistance * 0.6;
 
             ctx.lineWidth = lineWidth;
-            ctx.strokeStyle = LINE_COLOR.replace('{opacity}', opacity.toString());
+            ctx.strokeStyle = LINE_COLOR({ opacity });
 
             ctx.beginPath();
             ctx.moveTo(this.x, this.y);

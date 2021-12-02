@@ -13,7 +13,7 @@ export const DRAW_LINE_MOUSE_THRESHOLD = DRAW_LINE_THRESHOLD * 1.25;
 export const DRAW_LINE_MOUSE_THRESHOLD_SQUARED = DRAW_LINE_MOUSE_THRESHOLD * DRAW_LINE_MOUSE_THRESHOLD;
 
 export const CIRCLE_COLOR = 'rgb(175, 175, 175)';
-export const LINE_COLOR = 'rgb(175, 175, 175, {opacity})';
+export const LINE_COLOR = ({ opacity }: { opacity: number }) => `rgb(175, 175, 175, ${opacity})`;
 
 let width: number;
 let height: number;
