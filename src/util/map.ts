@@ -1,4 +1,4 @@
-export const map = (value, fromLow, fromHigh, toLow, toHigh) => {
+export const map = (value: number, fromLow: number, fromHigh: number, toLow: number, toHigh: number) => {
     const a = (fromHigh - fromLow) / (value - fromLow);
     if (a === Infinity || value === fromLow) {
         return toLow;

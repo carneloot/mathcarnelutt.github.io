@@ -15,11 +15,11 @@ export const DRAW_LINE_MOUSE_THRESHOLD_SQUARED = DRAW_LINE_MOUSE_THRESHOLD * DRA
 export const CIRCLE_COLOR = 'rgb(175, 175, 175)';
 export const LINE_COLOR = 'rgb(175, 175, 175, {opacity})';
 
-let width;
-let height;
+let width: number;
+let height: number;
 
-export const setWidth = v => width = v;
-export const setHeight = v => height = v;
+export const setWidth = (v: number) => width = v;
+export const setHeight = (v: number) => height = v;
 
 export const getWidth = () => width;
 export const getHeight = () => height;

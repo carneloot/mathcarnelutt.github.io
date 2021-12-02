@@ -1,8 +1,14 @@
-import { Circle } from './circle.mjs';
-import { getHeight, getWidth, MAX_NUMBER_OF_CIRCLES, NUMBER_OF_CIRCLES, setHeight, setWidth } from './config.mjs';
-import { map } from './lib/map.mjs';
+import { Circle, CircleLike } from './circle';
+import { getHeight, getWidth, MAX_NUMBER_OF_CIRCLES, NUMBER_OF_CIRCLES, setHeight, setWidth } from './config';
+import { map } from './util/map';
 
-let circles, ctx, mouse, fps, lastAnimTime, delta;
+let circles: Circle[];
+let ctx: CanvasRenderingContext2D;
+let fps: number;
+let lastAnimTime: DOMHighResTimeStamp;
+let delta: DOMHighResTimeStamp;
+let mouse: CircleLike;
+
 let isDevMode = false;
 
 function calculateFps() {
@@ -17,25 +23,26 @@ function calculateFps() {
     fps = 1 / delta;
 }
 
-function drawFps(ctx) {
+function drawFps(ctx: CanvasRenderingContext2D) {
     ctx.fillStyle = 'red';
     ctx.font = '25px serif';
     ctx.textBaseline = 'top';
     ctx.fillText(Math.floor(fps).toString(), 10, 10);
 }
 
-function drawMouse(ctx) {
+function drawMouse(ctx: CanvasRenderingContext2D) {
     ctx.fillStyle = 'red';
     ctx.beginPath();
     ctx.arc(mouse.x, mouse.y, 3, 0, 2 * Math.PI, true);
     ctx.fill();
 }
 
-function updateMouseObject(ev) {
+function updateMouseObject(ev: MouseEvent) {
     ev.preventDefault();
     ev.stopPropagation();
 
-    const rect = ev.target.getBoundingClientRect();
+    const canvas = ev?.target! as HTMLCanvasElement;
+    const rect = canvas.getBoundingClientRect();
     mouse = {
         x: ev.clientX - rect.left,
         y: ev.clientY - rect.top,
@@ -44,7 +51,7 @@ function updateMouseObject(ev) {
     };
 }
 
-function resetMouseObject(ev) {
+function resetMouseObject(ev?: MouseEvent) {
     if (ev) {
         ev.preventDefault();
         ev.stopPropagation();
@@ -58,7 +65,7 @@ function resetMouseObject(ev) {
     };
 }
 
-function handleMouseClick(ev) {
+function handleMouseClick(ev: MouseEvent) {
     ev.preventDefault();
     ev.stopPropagation();
 
@@ -67,20 +74,20 @@ function handleMouseClick(ev) {
     const numCirclesAdd = Math.min(Math.floor(circles.length * 0.1), MAX_NUMBER_OF_CIRCLES * 0.1);
 
     for (let i = 0; i < numCirclesAdd; i++) {
-        circles.push(Circle.getRandom(x, y));
+        circles.push(new Circle(x, y));
     }
 }
 
-function resetCanvas(ctx) {
+function resetCanvas(ctx: CanvasRenderingContext2D) {
     ctx.fillStyle = 'rgba(0, 0, 0, 0.07)';
     ctx.fillRect(0, 0, getWidth(), getHeight());
 }
 
-function drawNumberOfCircles(ctx) {
+function drawNumberOfCircles(ctx: CanvasRenderingContext2D) {
     ctx.fillStyle = 'red';
     ctx.font = '25px serif';
     ctx.textBaseline = 'bottom';
-    ctx.fillText(circles.length, 10, getHeight() - 10);
+    ctx.fillText(circles.length.toString(), 10, getHeight() - 10);
 }
 
 function cleanCircles() {
@@ -94,9 +101,9 @@ function cleanCircles() {
     }
 }
 
-async function setup() {
-    const canvas = document.getElementById('canvas');
-    ctx = canvas.getContext('2d');
+function setup() {
+    const canvas = document.getElementById('canvas') as HTMLCanvasElement;
+    ctx = canvas.getContext('2d')!;
     canvas.setAttribute('width', window.innerWidth.toString());
     canvas.setAttribute('height', window.innerHeight.toString());
 
@@ -115,9 +122,7 @@ async function setup() {
         circles.push(Circle.getRandom());
     }
 
-    isDevMode = await fetch('./api/is-dev')
-        .then(res => res.json())
-        .then(data => data.isDev)
+    isDevMode = import.meta.env.DEV;
 
     window.requestAnimationFrame(draw);
 }

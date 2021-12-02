@@ -1,10 +1,23 @@
 {
-  "devDependencies": {
-    "@types/axios": "^0.14.0",
-    "@types/node": "^14.14.33",
-    "@vercel/node": "^1.9.1"
-  },
-  "dependencies": {
-    "axios": "^0.21.2"
-  }
+    "name": "carnelutt.github.io",
+    "version": "1.0.0",
+    "main": "src/index.html",
+    "repository": "git@github.com:MathCarnelutt/mathcarnelutt.github.io.git",
+    "author": "Matheus Carnelutt <matheuschafrao@gmail.com>",
+    "license": "MIT",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview"
+    },
+    "devDependencies": {
+        "@types/axios": "^0.14.0",
+        "@types/node": "^14.14.33",
+        "@vercel/node": "^1.9.1",
+        "typescript": "^4.5.2",
+        "vite": "^2.6.14"
+    },
+    "dependencies": {
+        "axios": "^0.21.2"
+    }
 }

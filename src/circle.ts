@@ -2,24 +2,33 @@ import {
     CIRCLE_COLOR,
     DRAW_LINE_MOUSE_THRESHOLD_SQUARED,
     DRAW_LINE_THRESHOLD,
-    DRAW_LINE_THRESHOLD_SQUARED, getHeight, getWidth,
-    LINE_COLOR, MAX_RADIUS,
-    MAX_VELOCITY, MIN_RADIUS,
-} from './config.mjs';
+    DRAW_LINE_THRESHOLD_SQUARED,
+    getHeight,
+    getWidth,
+    LINE_COLOR,
+    MAX_RADIUS,
+    MAX_VELOCITY,
+    MIN_RADIUS,
+} from './config';
 
-export class Circle {
+export type CircleLike = {
+    x: number;
+    y: number;
+    radius: number;
+    isMouse: boolean;
+}
 
-    constructor(x, y, radius) {
-        this.x = x;
-        this.y = y;
+export class Circle implements CircleLike {
+    private readonly dx = Math.random() * MAX_VELOCITY * 2 - MAX_VELOCITY;
+    private readonly dy = Math.random() * MAX_VELOCITY * 2 - MAX_VELOCITY;
+    public readonly radius = MIN_RADIUS + Math.random() * (MAX_RADIUS - MIN_RADIUS)
 
-        this.radius = radius;
+    public isMouse = false;
 
-        this.dx = Math.random() * MAX_VELOCITY * 2 - MAX_VELOCITY;
-        this.dy = Math.random() * MAX_VELOCITY * 2 - MAX_VELOCITY;
-
-        this.isMouse = false;
-    }
+    constructor(
+        public x: number,
+        public y: number,
+    ) {}
 
     update() {
         this.x += this.dx;
@@ -42,7 +51,7 @@ export class Circle {
         }
     }
 
-    draw(ctx) {
+    draw(ctx: CanvasRenderingContext2D) {
         ctx.fillStyle = CIRCLE_COLOR;
 
         ctx.beginPath();
@@ -52,7 +61,7 @@ export class Circle {
         ctx.fill();
     }
 
-    distanceSquared(other) {
+    distanceSquared(other: CircleLike) {
         const { x: tX, y: tY } = this;
         const { x: oX, y: oY } = other;
 
@@ -62,7 +71,7 @@ export class Circle {
         return dx * dx + dy * dy;
     }
 
-    drawLine(other, ctx) {
+    drawLine(other: CircleLike, ctx: CanvasRenderingContext2D) {
         const distanceSquared = this.distanceSquared(other);
 
         const threshold = (other.isMouse)
@@ -88,7 +97,7 @@ export class Circle {
         }
     }
 
-    drawVisionCircle(ctx) {
+    drawVisionCircle(ctx: CanvasRenderingContext2D) {
         ctx.strokeStyle = 'blue';
         ctx.lineWidth = 3;
 
@@ -97,12 +106,7 @@ export class Circle {
         ctx.stroke();
     }
 
-    static getRandom(
-        x = Math.random() * getWidth(),
-        y = Math.random() * getHeight(),
-    ) {
-        const radius = MIN_RADIUS + Math.random() * (MAX_RADIUS - MIN_RADIUS);
-
-        return new Circle(x, y, radius);
+    static getRandom() {
+        return new Circle(Math.random() * getWidth(), Math.random() * getHeight());
     }
 }
