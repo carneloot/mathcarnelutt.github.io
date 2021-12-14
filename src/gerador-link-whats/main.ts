@@ -6,6 +6,7 @@ const copiadoMsg = document.querySelector<HTMLParagraphElement>('#copiadoMsg')!;
 const inputResultado = document.querySelector<HTMLInputElement>('#inputResultado')!;
 const loadingSpinner = document.querySelector<HTMLDivElement>('#loadingSpinner')!;
 const shortenButton = document.querySelector<HTMLButtonElement>('#shortenButton')!;
+const navigateButton = document.querySelector<HTMLButtonElement>('#navigateButton')!;
 const copyButton = document.querySelector<HTMLButtonElement>('#copyButton')!;
 const form = document.querySelector<HTMLFormElement>('#form')!;
 
@@ -92,11 +93,13 @@ function mostrarSpinner() {
 function bloquearEncurtador() {
     podeEncurtar = false;
     shortenButton.setAttribute('disabled', 'true');
+    navigateButton.setAttribute('disabled', 'true');
 }
 
 function liberarEncurtador() {
     podeEncurtar = true;
     shortenButton.removeAttribute('disabled');
+    navigateButton.removeAttribute('disabled');
 }
 
 function formatarNumero(numero: string) {
@@ -107,10 +110,21 @@ function formatarTexto(texto: string) {
     return encodeURIComponent(texto).replace(/\!/g, '%21');
 }
 
+function navegarParaLink() {
+    if (!podeEncurtar) {
+        return;
+    }
+
+    const link = pegarValorFinal();
+
+    window.location.assign(link)
+}
+
 function setup() {
     form.addEventListener('submit', gerarLink);
     copyButton.addEventListener('click', copiarLink);
     shortenButton.addEventListener('click', encurtarLink);
+    navigateButton.addEventListener('click', navegarParaLink);
 
     esconderSpinner();
     bloquearEncurtador();
