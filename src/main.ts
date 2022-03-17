@@ -10,6 +10,8 @@ let delta: DOMHighResTimeStamp;
 let mouse: Circle;
 let maxCircles: number = 0;
 
+let mousePressed: boolean = false;
+
 let isDevMode = false;
 
 function calculateFps() {
@@ -60,6 +62,21 @@ function resetMouseObject(ev?: MouseEvent) {
         Infinity,
     );
     mouse.isMouse = true;
+    mousePressed = false;
+}
+
+function addCirclesAtPoint(x: number, y: number, numCirclesToAdd?: number) {
+    if (!x || !y) {
+        return;
+    }
+
+    if (!numCirclesToAdd) {
+        numCirclesToAdd = Math.min(Math.floor(circles.length * 0.1), maxCircles * 0.1);
+    }
+
+    for (let i = 0; i < numCirclesToAdd; i++) {
+        circles.push(new Circle(x, y));
+    }
 }
 
 function handleMouseClick(ev: MouseEvent) {
@@ -68,11 +85,7 @@ function handleMouseClick(ev: MouseEvent) {
 
     const { x, y } = mouse;
 
-    const numCirclesAdd = Math.min(Math.floor(circles.length * 0.1), maxCircles * 0.1);
-
-    for (let i = 0; i < numCirclesAdd; i++) {
-        circles.push(new Circle(x, y));
-    }
+    addCirclesAtPoint(x, y);
 }
 
 function resetCanvas(ctx: CanvasRenderingContext2D) {
@@ -106,7 +119,9 @@ function setup() {
 
     canvas.addEventListener('mousemove', ev => updateMouseObject(ev));
     canvas.addEventListener('mouseleave', ev => resetMouseObject(ev));
-    canvas.addEventListener('click', ev => handleMouseClick(ev))
+    // canvas.addEventListener('click', ev => handleMouseClick(ev))
+    canvas.addEventListener('mousedown', () => mousePressed = true);
+    canvas.addEventListener('mouseup', () => mousePressed = false);
 
     resetMouseObject();
 
@@ -143,6 +158,10 @@ function draw() {
     cleanCircles();
 
     resetCanvas(ctx);
+
+    if (mouse && mousePressed) {
+        addCirclesAtPoint(mouse.x, mouse.y,2);
+    }
 
     // Update loop
     for (const circle of circles) {
