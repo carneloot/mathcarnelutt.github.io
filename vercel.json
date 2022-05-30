@@ -1,6 +1,7 @@
 {
     "redirects": [
-        { "source": "/git", "destination": "https://drive.google.com/file/d/1noEnE8de9SeOQO2_hzgkILRYRVXsg5ru/view?usp=sharing" }
+        { "source": "/git", "destination": "https://drive.google.com/file/d/1noEnE8de9SeOQO2_hzgkILRYRVXsg5ru/view?usp=sharing" },
+        { "source": "/corais/voice-pieta", "destination": "https://drive.google.com/drive/folders/1TUQycQL4wqBxEqRrxkrIt7pma7bHXmL-?usp=sharing" }
     ],
     "rewrites": [
         { "source": "/projects/:match*", "destination": "https://mathcarnelutt.github.io/:match*" }
