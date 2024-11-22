@@ -1,11 +1,8 @@
-import axios from 'axios';
-
 let podeEncurtar = true;
 
 const copiadoMsg = document.querySelector<HTMLParagraphElement>('#copiadoMsg')!;
 const inputResultado = document.querySelector<HTMLInputElement>('#inputResultado')!;
 const loadingSpinner = document.querySelector<HTMLDivElement>('#loadingSpinner')!;
-const shortenButton = document.querySelector<HTMLButtonElement>('#shortenButton')!;
 const navigateButton = document.querySelector<HTMLButtonElement>('#navigateButton')!;
 const copyButton = document.querySelector<HTMLButtonElement>('#copyButton')!;
 const form = document.querySelector<HTMLFormElement>('#form')!;
@@ -15,29 +12,6 @@ function copiarLink() {
 
     inputResultado.select();
     document.execCommand('copy');
-}
-
-async function encurtarLink() {
-    if (!podeEncurtar) {
-        return;
-    }
-
-    mostrarSpinner();
-
-    const urlLonga = pegarValorFinal();
-
-    const response = await axios.post('/api/shorten', {
-        url: urlLonga,
-    });
-
-    const encurtado = decodeURIComponent(response.data.url);
-
-    setarValorFinal(encurtado);
-    esconderMsgCopiado();
-
-    esconderSpinner();
-
-    bloquearEncurtador();
 }
 
 function gerarLink(ev: SubmitEvent) {
@@ -64,7 +38,6 @@ function gerarLink(ev: SubmitEvent) {
     // Mostra o resultado
     document.querySelector<HTMLDivElement>('.input-group')!.style.display = '';
     esconderMsgCopiado();
-    liberarEncurtador();
 
     // Retorn falso para nao atualizar a pagina
     return false;
@@ -90,18 +63,6 @@ function mostrarSpinner() {
     loadingSpinner.style.display = '';
 }
 
-function bloquearEncurtador() {
-    podeEncurtar = false;
-    shortenButton.setAttribute('disabled', 'true');
-    navigateButton.setAttribute('disabled', 'true');
-}
-
-function liberarEncurtador() {
-    podeEncurtar = true;
-    shortenButton.removeAttribute('disabled');
-    navigateButton.removeAttribute('disabled');
-}
-
 function formatarNumero(numero: string) {
     return numero.replace(/[^0-9]/g, '');
 }
@@ -123,12 +84,9 @@ function navegarParaLink() {
 function setup() {
     form.addEventListener('submit', gerarLink);
     copyButton.addEventListener('click', copiarLink);
-    shortenButton.addEventListener('click', encurtarLink);
     navigateButton.addEventListener('click', navegarParaLink);
 
     esconderSpinner();
-    bloquearEncurtador();
-    liberarEncurtador();
 }
 
 setup();
