@@ -1,5 +1,5 @@
 import { Circle } from './circle';
-import { getHeight, getWidth, MAX_NUMBER_OF_CIRCLES, NUMBER_OF_CIRCLES, setHeight, setWidth } from './config';
+import { getHeight, getWidth, NUMBER_OF_CIRCLES, setHeight, setWidth } from './config';
 import { map } from './util/map';
 
 let circles: Circle[];
@@ -8,11 +8,12 @@ let fps: number;
 let lastAnimTime: DOMHighResTimeStamp;
 let delta: DOMHighResTimeStamp;
 let mouse: Circle;
-let maxCircles: number = 0;
+
+let desiredNumberOfCircles = NUMBER_OF_CIRCLES();
 
 let mousePressed: boolean = false;
 
-let isDevMode = false;
+const isDevMode = import.meta.env.DEV;
 
 function calculateFps() {
     if (!lastAnimTime) {
@@ -71,21 +72,13 @@ function addCirclesAtPoint(x: number, y: number, numCirclesToAdd?: number) {
     }
 
     if (!numCirclesToAdd) {
-        numCirclesToAdd = Math.min(Math.floor(circles.length * 0.1), maxCircles * 0.1);
+        const diff = desiredNumberOfCircles - circles.length;
+        numCirclesToAdd = diff < 0 ? 0 : Math.min(Math.floor(diff * 0.1), desiredNumberOfCircles * 0.1);
     }
 
     for (let i = 0; i < numCirclesToAdd; i++) {
         circles.push(new Circle(x, y));
     }
-}
-
-function handleMouseClick(ev: MouseEvent) {
-    ev.preventDefault();
-    ev.stopPropagation();
-
-    const { x, y } = mouse;
-
-    addCirclesAtPoint(x, y);
 }
 
 function resetCanvas(ctx: CanvasRenderingContext2D) {
@@ -100,14 +93,28 @@ function drawNumberOfCircles(ctx: CanvasRenderingContext2D) {
     ctx.fillText(circles.length.toString(), 10, getHeight() - 10);
 }
 
-function cleanCircles() {
-    const chanceToRemove = (circles.length - maxCircles) / maxCircles;
-    const circlesToRemove = Math.floor(map(chanceToRemove, 0, 1, 1, maxCircles * 0.1));
+function normalizeCircleNumber() {
+    // Diff is positive if we need to add circles
+    // Diff is negative if we need to remove circles
+    const diff = desiredNumberOfCircles - circles.length;
 
-    if (Math.random() < chanceToRemove) {
-        for (let i = 0; i < circlesToRemove; i++) {
-            circles.splice(0, 1);
-        }
+    if (Math.abs(diff) < desiredNumberOfCircles * 0.05) {
+        return;
+    }
+
+    const chanceToChange = Math.abs(diff) / desiredNumberOfCircles;
+    const numberToChange = Math.floor(map(chanceToChange, 0, 1, 1, desiredNumberOfCircles * 0.01));
+
+    if (Math.random() > chanceToChange) {
+        return;
+    }
+
+    const action = diff > 0
+        ? () => circles.push(Circle.getRandom())
+        : () => circles.splice(0, 1);
+
+    for (let i = 0; i < numberToChange; i++) {
+        action();
     }
 }
 
@@ -128,15 +135,11 @@ function setup() {
     setWidth(canvas.width);
     setHeight(canvas.height);
 
-    maxCircles = MAX_NUMBER_OF_CIRCLES();
-
     circles = [];
 
-    for (let i = 0; i < NUMBER_OF_CIRCLES(); i++) {
+    for (let i = 0; i < desiredNumberOfCircles * 0.3; i++) {
         circles.push(Circle.getRandom());
     }
-
-    isDevMode = import.meta.env.DEV;
 
     window.addEventListener('resize', () => {
         canvas.setAttribute('width', window.innerWidth.toString());
@@ -145,7 +148,7 @@ function setup() {
         setWidth(canvas.width);
         setHeight(canvas.height);
 
-        maxCircles = MAX_NUMBER_OF_CIRCLES();
+        desiredNumberOfCircles = NUMBER_OF_CIRCLES();
     })
 
     window.requestAnimationFrame(draw);
@@ -155,12 +158,12 @@ function draw() {
     calculateFps();
     ctx.clearRect(0, 0, getWidth(), getHeight());
 
-    cleanCircles();
+    normalizeCircleNumber();
 
     resetCanvas(ctx);
 
     if (mouse && mousePressed) {
-        addCirclesAtPoint(mouse.x, mouse.y,2);
+        addCirclesAtPoint(mouse.x, mouse.y, 1);
     }
 
     // Update loop
