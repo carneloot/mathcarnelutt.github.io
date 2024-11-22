@@ -90,7 +90,7 @@ function drawNumberOfCircles(ctx: CanvasRenderingContext2D) {
     ctx.fillStyle = 'red';
     ctx.font = '25px serif';
     ctx.textBaseline = 'bottom';
-    ctx.fillText(circles.length.toString(), 10, getHeight() - 10);
+    ctx.fillText(`${circles.length} / ${desiredNumberOfCircles}`, 10, getHeight() - 10);
 }
 
 function normalizeCircleNumber() {
@@ -98,12 +98,13 @@ function normalizeCircleNumber() {
     // Diff is negative if we need to remove circles
     const diff = desiredNumberOfCircles - circles.length;
 
-    if (Math.abs(diff) < desiredNumberOfCircles * 0.05) {
+
+    if (Math.abs(diff) == 0) {
         return;
     }
 
     const chanceToChange = Math.abs(diff) / desiredNumberOfCircles;
-    const numberToChange = Math.floor(map(chanceToChange, 0, 1, 1, desiredNumberOfCircles * 0.01));
+    const numberToChange = Math.floor(map(chanceToChange, 0, 1, 1, Math.max(desiredNumberOfCircles * 0.25, 1)));
 
     if (Math.random() > chanceToChange) {
         return;
